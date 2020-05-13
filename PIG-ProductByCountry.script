@@ -1,0 +1,18 @@
+salesData = LOAD './sales-data.data' USING PigStorage(',')
+                AS (salesDate:chararray,
+                    productName:chararray,
+                    price:float,
+                    paymentType:chararray,
+                    name:chararray,
+                    city:chararray,
+                    state:chararray,
+                    country:chararray
+                   );
+
+groupSalesData = GROUP salesData by country;
+
+groupSalesDataWithFields = FOREACH groupSalesData GENERATE group as countryName, COUNT(salesData.productName) as productCount;
+
+sortFinalResult = ORDER groupSalesDataWithFields BY productCount;
+
+DUMP sortFinalResult;
